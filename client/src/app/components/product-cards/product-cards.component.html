@@ -1,0 +1,36 @@
+<div
+  class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+>
+  <!-- Product Card -->
+  <div
+    *ngFor="let product of products"
+    class="bg-white shadow rounded-lg overflow-hidden"
+  >
+    <a [routerLink]="['/product', product.id]">
+      <img
+        [src]="product.images[0].fullSize"
+        alt="{{ product.name }}"
+        class="w-full h-48 object-contain"
+      />
+    </a>
+    <div class="p-4">
+      <h2 class="text-lg font-semibold mb-2">{{ product.name }}</h2>
+      <p class="text-gray-700 text-sm mb-4">
+        {{ product.description | slice : 0 : 60 }}...
+      </p>
+      <div class="text-blue-600 font-bold text-lg mb-2">
+        {{ product.price | currency }}
+        <span class="text-red-700 line-through" *ngIf="product.originalPrice">{{
+          product.originalPrice | currency
+        }}</span>
+      </div>
+      <a
+        [routerLink]="['/product', product.id]"
+        class="block text-center bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+      >
+        View Details
+      </a>
+    </div>
+  </div>
+  <!-- End Product Card -->
+</div>

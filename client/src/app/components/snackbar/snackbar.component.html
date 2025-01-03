@@ -1,0 +1,12 @@
+<div
+  class="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg flex items-center justify-between space-x-4"
+  *ngIf="isVisible"
+>
+  <span>{{ message }}</span>
+  <button
+    class="text-white-400 hover:underline"
+    (click)="this.isVisible = false"
+  >
+    {{ actionText }}
+  </button>
+</div>

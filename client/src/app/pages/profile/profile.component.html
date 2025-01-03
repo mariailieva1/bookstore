@@ -1,0 +1,78 @@
+<div class="container min-h-screen mx-auto p-6" *ngIf="user">
+  <h1 class="text-2xl font-semibold text-gray-800 mb-4">My Profile</h1>
+
+  <!-- Personal Information -->
+  <section class="bg-white shadow-md rounded-lg p-6 mb-6">
+    <h2 class="text-lg font-semibold text-gray-800">Personal Information</h2>
+    <p class="text-gray-600 mt-2"><strong>Name:</strong> {{ user.name }}</p>
+    <p class="text-gray-600"><strong>Email:</strong> {{ user.email }}</p>
+    <!-- <p class="text-gray-600"><strong>Address:</strong> {{ user.address }}</p> -->
+  </section>
+
+  <!-- Payment Details -->
+  <app-address
+    [addresses]="addresses"
+    [selectable]="false"
+    (onSubmit)="editAddress($event)"
+    (onDelete)="deleteAddress($event)"
+    (selectedAddressId)="selectedAddressId = $event"
+  ></app-address>
+
+  <!-- Order History -->
+  <section class="bg-white shadow-md rounded-lg p-6 mt-6 mb-6">
+    <h2 class="text-lg font-semibold text-gray-800">Order History</h2>
+    <ng-container *ngIf="!orders"> Loading... </ng-container>
+
+    <div
+      class="mb-4 border rounded p-4 bg-gray-50"
+      *ngFor="let order of orders || []"
+    >
+      <p class="text-gray-600 mt-2">
+        <strong>Total Amount: </strong>
+        {{ order.checkoutDetails.amount_total / 100 | currency }}
+      </p>
+      <p class="text-gray-600 mt-2">
+        <strong>Date Created: </strong>
+        {{ order.checkoutDetails.created | date }}
+      </p>
+      <p class="text-gray-600 mt-2">
+        <strong>Status: </strong>
+        <span
+          [class.text-red-600]="
+            order.checkoutDetails.payment_status == 'unpaid'
+          "
+          [class.text-green-600]="
+            order.checkoutDetails.payment_status == 'paid'
+          "
+          class="font-semibold"
+          >{{ order.checkoutDetails.payment_status | titlecase }}</span
+        >
+      </p>
+
+      <h3 class="text-md font-semibold text-gray-700 mt-4">Products:</h3>
+      <ul class="divide-y divide-gray-200">
+        <li class="py-2" *ngFor="let item of order.lineItems.data">
+          <p class="text-gray-800">
+            {{ item.description }} - {{ item.amount_total / 100 | currency }}
+          </p>
+
+          <p class="text-sm text-gray-500">Quantity: {{ item.quantity }}</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- Preferences -->
+  <app-tag-selection
+    [isFullpage]="false"
+    [selectedTags]="selectedTags"
+    [shouldRedirect]="false"
+  ></app-tag-selection>
+  <!-- <section class="bg-white shadow-md rounded-lg p-6">
+    <h2 class="text-lg font-semibold text-gray-800">Preferences</h2>
+    <p class="text-gray-600 mt-2">Preferred Genres:</p>
+    <ul class="text-gray-600 list-disc list-inside">
+      <li *ngFor="let genre of []">{{ genre }}</li>
+    </ul>
+  </section> -->
+</div>

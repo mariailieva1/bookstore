@@ -1,0 +1,65 @@
+<div class="container mx-auto p-6">
+  <h1 class="text-2xl font-semibold text-gray-800 mb-6">My Cart</h1>
+
+  <!-- Cart Items -->
+  <div class="bg-white shadow-md rounded-lg p-6">
+    <h2 class="text-lg font-semibold text-gray-800 mb-4">Cart Items</h2>
+    <table class="w-full text-left">
+      <thead>
+        <tr>
+          <th class="pb-4">Product</th>
+          <th class="pb-4">Price</th>
+          <th class="pb-4">Quantity</th>
+          <th class="pb-4">Subtotal</th>
+          <th class="pb-4"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let product of cartItems" class="border-b">
+          <td class="py-4">{{ product.name }}</td>
+          <td class="py-4">${{ product.price }}</td>
+          <td class="py-4">
+            <input
+              type="number"
+              min="1"
+              class="border rounded-md w-16 p-1 text-center"
+              [max]="product.stock_quantity"
+              [(ngModel)]="product.quantity"
+              (change)="updateCart()"
+            />
+          </td>
+          <td class="py-4">${{ product.quantity * product.price }}</td>
+          <td class="py-4">
+            <button
+              class="text-red-500 hover:underline"
+              (click)="removeFromCart(product.id)"
+            >
+              Remove
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Delivery Address -->
+  <app-address
+    [addresses]="addresses"
+    (onSubmit)="onSubmitAddress($event)"
+    (selectedAddressId)="selectedAddressId = $event"
+  ></app-address>
+
+  <!-- Cart Summary -->
+  <div class="bg-white shadow-md rounded-lg p-6 mt-6">
+    <h2 class="text-lg font-semibold text-gray-800">Summary</h2>
+    <p class="mt-2 text-gray-600">
+      <strong>Total:</strong> ${{ calculateTotal() }}
+    </p>
+    <button
+      class="bg-green-500 text-white py-2 px-4 rounded-lg mt-4 hover:bg-green-600"
+      (click)="proceedToCheckout()"
+    >
+      Proceed to Checkout
+    </button>
+  </div>
+</div>

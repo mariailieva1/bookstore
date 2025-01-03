@@ -1,0 +1,69 @@
+<!-- <app-best-sellers></app-best-sellers> -->
+<div class="container mx-auto px-4 py-6">
+  <app-recommended></app-recommended>
+  <!-- Header -->
+  <h1 class="text-3xl font-bold text-gray-800 mb-6">Shop by Department</h1>
+
+  <!-- Department Navigation -->
+  <div class="sticky top-0 bg-white py-4 z-10 shadow-sm">
+    <ul class="flex space-x-4 overflow-x-auto">
+      <li
+        class="cursor-pointer text-blue-600 hover:underline"
+        [class.underline]="selectedDepartmentIndex === undefined"
+      >
+        <a routerLink="/"> Show All </a>
+      </li>
+      <li
+        *ngFor="let department of departments; let i = index"
+        class="cursor-pointer text-blue-600 hover:underline"
+        [class.underline]="selectedDepartmentIndex === i"
+      >
+        <a routerLink="/" [queryParams]="{ dep: department.id }">
+          {{ department.name }}
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Departments -->
+  <div *ngFor="let department of filteredDepartments" class="mt-8">
+    <!-- Department Name -->
+    <h2 class="text-2xl font-bold text-gray-700 mb-4">{{ department.name }}</h2>
+
+    <!-- Categories in Department -->
+    <div *ngFor="let category of department.categories" class="mb-8">
+      <!-- Category Name -->
+      <h3 class="text-xl font-semibold text-gray-600 mb-2">
+        <a [routerLink]="['/category', category.id]" class="text-blue-600">
+          {{ category.name }}
+        </a>
+      </h3>
+
+      <!-- Products in Category -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div
+          *ngFor="let product of category.products?.slice(0, 6)"
+          class="border rounded-lg p-4 hover:shadow-lg cursor-pointer"
+          [routerLink]="['product', product.id]"
+        >
+          <img
+            *ngIf="product.images"
+            [src]="product.images[0].fullSize"
+            [alt]="product.name"
+            class="w-full h-48 object-contain"
+          />
+          <h4 class="text-gray-800 font-medium">{{ product.name }}</h4>
+          <p class="text-gray-500 text-sm mt-1">{{ product.description }}</p>
+          <span class="text-blue-600 font-bold mt-2 block"
+            >{{ product.price | currency }}
+            <span
+              class="text-red-700 line-through"
+              *ngIf="product.originalPrice"
+              >{{ product.originalPrice | currency }}</span
+            >
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

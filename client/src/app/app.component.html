@@ -1,0 +1,14 @@
+<ng-container *ngIf="!showTagsSelection; else tags">
+  <app-navbar></app-navbar>
+  <router-outlet></router-outlet>
+  <app-footer></app-footer>
+
+  <app-snackbar></app-snackbar>
+</ng-container>
+
+<ng-template #tags>
+  <app-tag-selection
+    [isFullpage]="true"
+    [shouldRedirect]="true"
+  ></app-tag-selection>
+</ng-template>

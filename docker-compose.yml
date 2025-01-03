@@ -1,0 +1,49 @@
+services:
+    bookstore-frontend:
+        build:
+            context: ./client
+        container_name: bookstore-frontend
+        ports:
+            - "4200:4200"
+        volumes:
+            - ./common:/common
+            - ./client:/app
+            - /app/node_modules # Prevents overwriting node_modules with the host's
+        environment:
+            - NODE_ENV=development
+        links:
+            - backend
+        networks:
+            - bookstore-network
+
+    backend:
+        build:
+            context: .
+            dockerfile: ./server/Dockerfile
+        ports:
+            - "3000:3000"
+        volumes:
+            - ./common:/common
+            - ./server:/server
+            - /server/node_modules # Prevents overwriting node_modules with the host's
+        container_name: backend
+        environment:
+            - DATABASE_HOST=db
+        depends_on:
+            - db
+        networks:
+            - bookstore-network
+
+    db:
+        image: mysql:8.0
+        ports:
+            - "3306:3306"
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: bookstore
+        networks:
+            - bookstore-network
+
+networks:
+    bookstore-network:
+        driver: bridge

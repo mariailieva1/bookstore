@@ -1,0 +1,9 @@
+<ng-container *ngIf="products.length > 0">
+  <h1 class="text-3xl font-bold text-gray-800 mb-6">
+    Recommended based on your preference
+  </h1>
+
+  <app-product-cards [products]="products"></app-product-cards>
+
+  <div class="mb-6"></div>
+</ng-container>

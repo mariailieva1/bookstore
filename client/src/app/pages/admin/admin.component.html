@@ -1,0 +1,183 @@
+<!-- admin.component.html -->
+<div class="container mx-auto py-8">
+  <h1 class="text-3xl font-bold mb-4">Admin Dashboard</h1>
+
+  <div class="flex space-x-4 mb-8">
+    <button
+      class="bg-yellow-500 text-white px-4 py-2 rounded"
+      (click)="loadDepartments()"
+    >
+      Departments
+    </button>
+    <button
+      class="bg-blue-500 text-white px-4 py-2 rounded"
+      (click)="getCategories()"
+    >
+      Categories
+    </button>
+    <button
+      class="bg-green-500 text-white px-4 py-2 rounded"
+      (click)="getProducts()"
+    >
+      Products
+    </button>
+    <button
+      class="bg-green-500 text-white px-4 py-2 rounded"
+      (click)="getAuthors()"
+    >
+      Authors
+    </button>
+    <button
+      class="bg-green-500 text-white px-4 py-2 rounded"
+      (click)="getPublishers()"
+    >
+      Publishers
+    </button>
+    <button
+      class="bg-purple-500 text-white px-4 py-2 rounded"
+      (click)="getUsers()"
+    >
+      Users
+    </button>
+    <button
+      class="bg-purple-500 text-white px-4 py-2 rounded"
+      (click)="getOrders()"
+    >
+      Orders
+    </button>
+    <button
+      class="bg-purple-500 text-white px-4 py-2 rounded"
+      (click)="getAddresses()"
+    >
+      Addresses
+    </button>
+  </div>
+  <!-- Table for displaying data -->
+  <div class="overflow-x-auto">
+    <table
+      class="table-auto w-full text-left border-collapse border border-gray-300"
+    >
+      <thead class="bg-gray-100">
+        <tr>
+          <th
+            class="border border-gray-300 px-4 py-2"
+            *ngFor="let property of properties"
+          >
+            {{ property.property | titlecase }}
+          </th>
+          <th
+            class="border border-gray-300 px-4 py-2"
+            *ngIf="entityType !== 'orders'"
+          >
+            Actions
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          *ngFor="let item of data"
+          class="odd:bg-white even:bg-gray-50"
+          [ngClass]="{
+            'odd:bg-white even:bg-gray-50': currentItemId !== item.id,
+            'bg-green-500': currentItemId === item.id
+          }"
+        >
+          <td
+            class="border border-gray-300 px-4 py-2"
+            *ngFor="let property of properties"
+          >
+            <ng-container *ngIf="property.type === 'string'">
+              {{ item[property.property] | titlecase }}
+            </ng-container>
+
+            <ng-container *ngIf="property.type === 'date'">
+              {{ item[property.property] | date : "short" }}
+            </ng-container>
+
+            <ng-container *ngIf="property.type === 'object'">
+              ...
+            </ng-container>
+
+            <ng-container *ngIf="property.type === 'number'">
+              {{ item[property.property] }}
+            </ng-container>
+            <ng-container *ngIf="property.type === 'boolean'">
+              <input
+                type="checkbox"
+                [checked]="item[property.property]"
+                [disabled]="true"
+              />
+            </ng-container>
+          </td>
+          <td
+            class="border border-gray-300 px-4 py-2"
+            *ngIf="entityType !== 'orders'"
+          >
+            <button
+              class="bg-blue-500 text-white px-4 py-1 rounded mr-2"
+              (click)="editItem(item)"
+            >
+              Edit
+            </button>
+            <button
+              class="bg-red-500 text-white px-4 py-1 rounded"
+              (click)="deleteItem(item.id)"
+            >
+              Delete
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <ng-container
+    *ngIf="
+      entityType === 'orders' || (entityType === 'users' && !isEditing);
+      else amend
+    "
+  >
+    <ng-container *ngIf="entityType === 'users'">
+      Cannot add new users!
+    </ng-container>
+    <ng-container *ngIf="entityType === 'orders'">
+      Cannot edit/add orders!</ng-container
+    >
+  </ng-container>
+
+  <ng-template #amend>
+    <div
+      class="mt-8"
+      *ngIf="entityType === 'products' && isEditing && currentItemId"
+    >
+      <app-image-upload [productId]="currentItemId"></app-image-upload>
+    </div>
+    <div class="mt-8">
+      <h2 class="text-xl font-bold mb-4">
+        {{ isEditing ? "Edit" : "Add" }} Item
+      </h2>
+      <form
+        (ngSubmit)="saveItem()"
+        class="space-y-4"
+        *ngIf="currentItemStringified"
+      >
+        <textarea
+          [(ngModel)]="currentItemStringified"
+          class="w-full h-full bg-gray-100 p-2"
+          name="currentItem"
+          rows="10"
+        >
+        </textarea>
+        <div>
+          <button
+            type="submit"
+            [disabled]="entityType === 'orders'"
+            class="bg-green-500 text-white px-4 py-2 rounded"
+          >
+            {{ isEditing ? "Update" : "Add" }} Item
+          </button>
+        </div>
+      </form>
+    </div>
+  </ng-template>
+</div>

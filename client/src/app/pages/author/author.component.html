@@ -1,0 +1,17 @@
+<div class="min-h-screen bg-gray-100" *ngIf="author">
+  <!-- Author Information Section -->
+  <div class="bg-blue-600 text-white py-8">
+    <div class="container mx-auto px-4 text-center">
+      <h1 class="text-4xl font-bold mb-2">{{ author.name }}</h1>
+      <!-- <p class="text-lg">{{ author.bio }}</p> -->
+    </div>
+  </div>
+
+  <!-- Books Section -->
+  <div class="container mx-auto px-4 py-10">
+    <app-breadcrumb [items]="breadcrumb"></app-breadcrumb>
+
+    <h2 class="text-2xl font-semibold mb-6">Books by {{ author.name }}</h2>
+    <app-product-cards [products]="author.products || []"></app-product-cards>
+  </div>
+</div>

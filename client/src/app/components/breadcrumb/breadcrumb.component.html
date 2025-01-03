@@ -1,0 +1,12 @@
+<nav class="text-sm mb-4">
+  <ng-container *ngFor="let item of items">
+    <a
+      [routerLink]="item.link"
+      [queryParams]="item.queryParams"
+      class="text-blue-500 hover:underline"
+      >{{ item.name }}</a
+    >
+    /
+  </ng-container>
+  <span class="font-semibold" *ngIf="item">{{ item.name }}</span>
+</nav>

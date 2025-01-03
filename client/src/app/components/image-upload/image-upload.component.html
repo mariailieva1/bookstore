@@ -1,0 +1,43 @@
+<div class="flex flex-col items-center justify-center bg-gray-100">
+  THIS IS GOING TO BE MOVED TO AN ADMIN PANEL. TEMPORARY HERE FOR TESTING
+  PURPOSES
+  <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+    <h1 class="text-2xl font-bold text-center mb-4">Upload Images</h1>
+    <form (ngSubmit)="onSubmit()" #uploadForm="ngForm" class="space-y-4">
+      <div class="flex flex-col">
+        <label for="files" class="text-gray-700 font-medium"
+          >Choose images</label
+        >
+        <input
+          type="file"
+          id="files"
+          name="files"
+          (change)="onFilesSelected($event)"
+          accept="image/*"
+          multiple
+          class="mt-2 p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          required
+        />
+      </div>
+      <ul
+        *ngIf="selectedFiles.length > 0"
+        class="list-disc list-inside text-gray-600"
+      >
+        <li *ngFor="let file of selectedFiles">{{ file.name }}</li>
+      </ul>
+      <button
+        type="submit"
+        [disabled]="selectedFiles.length === 0"
+        class="w-full py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+      >
+        Upload All
+      </button>
+    </form>
+    <div *ngIf="uploadProgress !== null" class="mt-4">
+      <p class="text-gray-700">Uploading: {{ uploadProgress }}%</p>
+      <div class="w-full bg-gray-300 rounded-lg overflow-hidden">
+        <div class="h-2 bg-blue-500" [style.width.%]="uploadProgress"></div>
+      </div>
+    </div>
+  </div>
+</div>

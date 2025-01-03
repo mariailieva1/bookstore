@@ -1,0 +1,191 @@
+<div class="p-6 max-w-4xl mx-auto" *ngIf="product">
+  <!-- Breadcrumbs -->
+  <app-breadcrumb [items]="breadcrumb"></app-breadcrumb>
+  <!-- Product Overview -->
+  <div class="flex flex-col lg:flex-row gap-8">
+    <!-- Product Image -->
+    <!-- <div class="flex-shrink-0 w-full lg:w-1/2">
+      <img
+        [src]="product.images[0].fullSize"
+        loading="lazy"
+        alt="{{ product.name }}"
+        class="w-full rounded-lg shadow-md"
+      />
+    </div> -->
+    <!-- Product Image Section -->
+    <div class="container mx-auto px-4 py-10">
+      <div class="flex flex-col items-center">
+        <!-- Large Selected Image -->
+        <div class="w-full max-w-md">
+          <img
+            *ngIf="selectedImage"
+            [src]="selectedImage.fullSize"
+            alt="Selected Product Image"
+            class="w-full h-80 object-contain rounded-lg shadow"
+          />
+        </div>
+
+        <!-- Image Selector -->
+        <div class="flex mt-6 space-x-4 overflow-x-auto">
+          <img
+            *ngFor="let image of product.images; let i = index"
+            [src]="image.fullSize"
+            [alt]="product.name + i"
+            class="w-20 h-20 object-cover rounded-lg cursor-pointer hover:shadow-md border-2"
+            [class.border-blue-500]="image === selectedImage"
+            (click)="selectImage(image)"
+          />
+        </div>
+      </div>
+    </div>
+
+    <!-- Product Details -->
+    <div class="flex flex-col flex-grow">
+      <h1 class="text-3xl font-bold mb-4">{{ product.name }}</h1>
+      <p class="text-xl text-blue-600 font-bold mb-2">
+        {{ product.price | currency }}
+        <span class="line-through text-red-700" *ngIf="product.originalPrice">{{
+          product.originalPrice | currency
+        }}</span>
+      </p>
+      <p class="text-sm text-gray-600 mb-2">{{ product.category?.name }}</p>
+      <p class="text-sm text-gray-500 mb-4">{{ product.description }}</p>
+
+      <p class="text-sm text-gray-500" *ngIf="product.author">
+        Author:
+        <a
+          class="text-blue-500 cursor-pointer"
+          [routerLink]="['/author', product.author.id]"
+        >
+          {{ product.author.name }}
+        </a>
+      </p>
+      <p class="text-sm text-gray-500 mb-4" *ngIf="product.publisher">
+        Publisher:
+        <a
+          class="text-blue-500 cursor-pointer"
+          [routerLink]="['/publisher', product.publisher.id]"
+        >
+          {{ product.publisher.name }}
+        </a>
+      </p>
+
+      <!-- Stock Status -->
+      <p class="text-sm text-gray-500 mb-4">
+        Stock status:
+        <span
+          class="text-sm text-orange-500"
+          *ngIf="product.stock_quantity > 0 && product.stock_quantity < 20"
+        >
+          Limited pieces
+        </span>
+        <span class="text-sm text-red-500" *ngIf="product.stock_quantity == 0">
+          Not available
+        </span>
+        <span
+          class="text-sm text-green-500"
+          *ngIf="product.stock_quantity > 20"
+        >
+          Available
+        </span>
+      </p>
+
+      <!-- Action Buttons -->
+      <div class="flex gap-4 mb-4">
+        <button
+          (click)="toggleWishlist()"
+          class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          {{ isInWishlist ? "Remove from Wishlist" : "Add to Wishlist" }}
+        </button>
+        <button
+          *ngIf="product.stock_quantity > 0"
+          (click)="addToCart()"
+          class="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+        >
+          Add to Cart
+        </button>
+        <button
+          *ngIf="product.stock_quantity == 0"
+          class="px-4 py-2 bg-gray-500/50 rounded cursor-default"
+        >
+          Add to Cart
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reviews Section -->
+  <div class="mt-8">
+    <h2 class="text-2xl font-bold mb-4">Reviews</h2>
+
+    <!-- Review List -->
+    <div *ngFor="let review of product.reviews" class="mb-4 border-b pb-4">
+      <div class="flex items-center mb-2">
+        <span class="font-semibold">{{ review.user.name }}</span>
+        <span class="ml-2 text-sm text-gray-500">{{
+          review.created_at | date : "short"
+        }}</span>
+      </div>
+      <div class="flex items-center mb-1">
+        <span
+          class="text-yellow-500"
+          *ngFor="let star of [].constructor(review.rating)"
+          >&#9733;</span
+        >
+        <span
+          class="text-gray-300"
+          *ngFor="let star of [].constructor(5 - review.rating)"
+          >&#9733;</span
+        >
+      </div>
+      <p class="text-sm text-gray-700">{{ review.comment }}</p>
+    </div>
+
+    <!-- Add Review -->
+    <div class="mt-4">
+      <h3 class="text-xl font-bold mb-2">Leave a Review</h3>
+      <ng-container *ngIf="!isAuthenticated; else review"
+        >Only registered users can leave a review</ng-container
+      >
+
+      <ng-template #review>
+        <form>
+          <div class="flex items-center mb-1">
+            <!-- (click)="selectedRating = i" -->
+            <span
+              class="text-yellow-500 cursor-pointer"
+              (click)="selectedRating = i + 1; $event.preventDefault()"
+              *ngFor="let star of [].constructor(selectedRating); let i = index"
+              >&#9733;</span
+            >
+            <span
+              class="text-gray-300 cursor-pointer"
+              (click)="
+                selectedRating = selectedRating + i + 1; $event.preventDefault()
+              "
+              *ngFor="
+                let star of [].constructor(5 - selectedRating);
+                let i = index
+              "
+              >&#9733;</span
+            >
+          </div>
+          <textarea
+            placeholder="Write your review..."
+            class="w-full p-2 border rounded mb-2"
+            name="comment"
+            [(ngModel)]="comment"
+          ></textarea>
+          <button
+            type="submit"
+            class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            (click)="submitReview()"
+          >
+            Submit
+          </button>
+        </form>
+      </ng-template>
+    </div>
+  </div>
+</div>
