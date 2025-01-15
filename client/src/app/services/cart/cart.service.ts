@@ -35,7 +35,7 @@ export class CartService {
     const itemInCart = this._cart.find((item) => item.id === product.id);
     if (itemInCart) itemInCart.quantity += 1;
     else this._cart.push({ ...product, quantity: 1 });
-
+   
     this.updateStorage();
     this.cart.next(this._cart);
     this.newItemAdded.next({

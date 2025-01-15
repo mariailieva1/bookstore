@@ -421,7 +421,7 @@ export class DefaultProducts1735215946937 implements MigrationInterface {
     for await (let productId of Object.keys(productTags)) {
       for (let tagId of productTags[productId]) {
         await queryRunner.query(
-          `insert into products_tags_tags (productIds, tagIds) values (${productId}, ${tagId})`,
+          `insert into products_tags_tags (productsId, tagsId) values (${productId}, ${tagId})`,
         );
       }
     }
